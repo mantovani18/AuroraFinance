@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>Aurora Finanças — Assistente Financeiro Inteligente</title>
+<meta name="description" content="Assistente financeiro pessoal por chat, dashboard inteligente, organização e estudos. 100% local e privado." />
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0B1020" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Aurora" />
+<meta name="mobile-web-app-capable" content="yes" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ===================== APP SHELL ===================== -->
+<div id="app">
+
+  <!-- ---------- TOP BAR ---------- -->
+  <header class="topbar">
+    <div class="topbar__brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="11" width="4" height="10" rx="1.4" fill="#2DD4BF"/><rect x="10" y="5" width="4" height="16" rx="1.4" fill="#34D399"/><rect x="17" y="8" width="4" height="13" rx="1.4" fill="#F5B942"/></svg>
+      </span>
+      <div class="brand-text">
+        <strong>Aurora</strong><span>Finanças</span>
+      </div>
+    </div>
+    <div class="topbar__actions">
+      <button class="icon-btn" id="btn-theme" title="Alternar tema" aria-label="Alternar tema claro/escuro">
+        <svg id="icon-theme" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v1.5M12 19.5V21M4.2 4.2l1.1 1.1M18.7 18.7l1.1 1.1M3 12h1.5M19.5 12H21M4.2 19.8l1.1-1.1M18.7 5.3l1.1-1.1"/><circle cx="12" cy="12" r="4.5"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-settings" title="Configurações" aria-label="Abrir configurações">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a7.7 7.7 0 0 0 0-3l1.9-1.5-2-3.4-2.3.6a7.6 7.6 0 0 0-2.6-1.5L14 2h-4l-.4 2.7a7.6 7.6 0 0 0-2.6 1.5l-2.3-.6-2 3.4L4.6 10.5a7.7 7.7 0 0 0 0 3L2.7 15l2 3.4 2.3-.6c.77.66 1.66 1.18 2.6 1.5L10 22h4l.4-2.7c.94-.32 1.83-.84 2.6-1.5l2.3.6 2-3.4-1.9-1.5Z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ---------- MAIN VIEWS ---------- -->
+  <main class="views" id="views">
+
+    <!-- ===== HOME / DASHBOARD RESUMO ===== -->
+    <section class="view" id="view-home" data-view="home">
+      <div class="hero-balance glass">
+        <div class="hero-balance__label">Saldo atual</div>
+        <div class="hero-balance__value mono" id="home-balance">R$ 0,00</div>
+        <div class="hero-balance__row">
+          <div class="hero-chip hero-chip--income">
+            <span class="dot dot--income"></span> Receitas <strong id="home-income">R$ 0,00</strong>
+          </div>
+          <div class="hero-chip hero-chip--expense">
+            <span class="dot dot--expense"></span> Gastos <strong id="home-expense">R$ 0,00</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card glass">
+          <span class="kpi-card__icon" style="color:#34D399">▲</span>
+          <div class="kpi-card__label">Receitas do mês</div>
+          <div class="kpi-card__value mono" id="kpi-income">R$ 0,00</div>
+        </div>
+        <div class="kpi-card glass">
+          <span class="kpi-card__icon" style="color:#FF6B6B">▼</span>
+          <div class="kpi-card__label">Gastos do mês</div>
+          <div class="kpi-card__value mono" id="kpi-expense">R$ 0,00</div>
+        </div>
+        <div class="kpi-card glass">
+          <span class="kpi-card__icon" style="color:#F5B942">●</span>
+          <div class="kpi-card__label">Economia acumulada</div>
+          <div class="kpi-card__value mono" id="kpi-savings">R$ 0,00</div>
+        </div>
+        <div class="kpi-card glass">
+          <span class="kpi-card__icon" style="color:#2DD4BF">◆</span>
+          <div class="kpi-card__label">Lançamentos no mês</div>
+          <div class="kpi-card__value mono" id="kpi-count">0</div>
+        </div>
+      </div>
+
+      <div class="card glass chart-card">
+        <div class="card__head">
+          <h3>Evolução do saldo</h3>
+        </div>
+        <canvas id="chart-balance" height="180"></canvas>
+      </div>
+
+      <div class="card glass chart-card">
+        <div class="card__head">
+          <h3>Gastos por categoria</h3>
+        </div>
+        <canvas id="chart-category" height="220"></canvas>
+      </div>
+
+      <div class="card glass">
+        <div class="card__head">
+          <h3>Últimos lançamentos</h3>
+          <button class="link-btn" data-go="financas">ver tudo</button>
+        </div>
+        <ul class="tx-list" id="home-recent-list"></ul>
+      </div>
+    </section>
+
+    <!-- ===== CHAT ===== -->
+    <section class="view" id="view-chat" data-view="chat">
+      <div class="chat-wrap">
+        <div class="chat-intro glass" id="chat-intro">
+          <p>Olá! Eu sou a <strong>Aurora</strong>, sua assistente financeira. ✨</p>
+          <p>Me conte naturalmente o que aconteceu — eu registro tudo pra você.</p>
+          <div class="chat-suggestions">
+            <button class="suggestion-chip" data-fill="Gastei R$ 45 no mercado">Gastei R$ 45 no mercado</button>
+            <button class="suggestion-chip" data-fill="Recebi R$ 2500 de salário">Recebi R$ 2500 de salário</button>
+            <button class="suggestion-chip" data-fill="Paguei R$ 89 de internet">Paguei R$ 89 de internet</button>
+            <button class="suggestion-chip" data-fill="Qual meu saldo?">Qual meu saldo?</button>
+          </div>
+        </div>
+        <div class="chat-messages" id="chat-messages" role="log" aria-live="polite"></div>
+      </div>
+      <form class="chat-inputbar" id="chat-form">
+        <input type="text" id="chat-input" placeholder="Conte o que aconteceu... ex: Gastei R$ 30 com Uber" autocomplete="off" />
+        <button type="submit" class="send-btn" aria-label="Enviar">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+    </section>
+
+    <!-- ===== FINANÇAS (Lista / Dashboard completo) ===== -->
+    <section class="view" id="view-financas" data-view="financas">
+      <div class="seg-control" id="finance-period-tabs">
+        <button class="seg-btn is-active" data-period="week">Semana</button>
+        <button class="seg-btn" data-period="month">Mês</button>
+        <button class="seg-btn" data-period="all">Tudo</button>
+      </div>
+
+      <div class="card glass chart-card">
+        <div class="card__head"><h3>Movimentação</h3></div>
+        <canvas id="chart-period" height="200"></canvas>
+      </div>
+
+      <div class="card glass chart-card">
+        <div class="card__head"><h3>Comparativo de meses</h3></div>
+        <canvas id="chart-comparison" height="200"></canvas>
+      </div>
+
+      <div class="card glass">
+        <div class="card__head">
+          <h3>Todos os lançamentos</h3>
+          <button class="btn-pill" id="btn-add-tx">+ Novo</button>
+        </div>
+        <div class="filter-row">
+          <select id="filter-type">
+            <option value="all">Todos</option>
+            <option value="income">Receitas</option>
+            <option value="expense">Despesas</option>
+          </select>
+          <select id="filter-category">
+            <option value="all">Todas categorias</option>
+          </select>
+        </div>
+        <ul class="tx-list" id="financas-list"></ul>
+      </div>
+    </section>
+
+    <!-- ===== ORGANIZAÇÃO ===== -->
+    <section class="view" id="view-organizacao" data-view="organizacao">
+      <div class="seg-control" id="org-tabs">
+        <button class="seg-btn is-active" data-org="tasks">Tarefas</button>
+        <button class="seg-btn" data-org="goals">Metas</button>
+        <button class="seg-btn" data-org="habits">Hábitos</button>
+        <button class="seg-btn" data-org="calendar">Calendário</button>
+      </div>
+
+      <div class="org-panel" id="org-tasks">
+        <div class="card glass">
+          <div class="card__head">
+            <h3>Tarefas &amp; Checklist</h3>
+          </div>
+          <form id="task-form" class="inline-form">
+            <input type="text" id="task-input" placeholder="Adicionar tarefa..." />
+            <button type="submit" class="btn-pill">Adicionar</button>
+          </form>
+          <ul class="check-list" id="task-list"></ul>
+        </div>
+      </div>
+
+      <div class="org-panel is-hidden" id="org-goals">
+        <div class="card glass">
+          <div class="card__head"><h3>Metas financeiras</h3></div>
+          <form id="goal-form" class="inline-form inline-form--multi">
+            <input type="text" id="goal-name" placeholder="Nome da meta (ex: Viagem)" />
+            <input type="number" id="goal-target" placeholder="Valor objetivo" step="0.01" />
+            <button type="submit" class="btn-pill">Criar meta</button>
+          </form>
+          <ul class="goal-list" id="goal-list"></ul>
+        </div>
+      </div>
+
+      <div class="org-panel is-hidden" id="org-habits">
+        <div class="card glass">
+          <div class="card__head"><h3>Hábitos diários</h3></div>
+          <form id="habit-form" class="inline-form">
+            <input type="text" id="habit-input" placeholder="Novo hábito (ex: Beber água)" />
+            <button type="submit" class="btn-pill">Adicionar</button>
+          </form>
+          <ul class="habit-list" id="habit-list"></ul>
+        </div>
+      </div>
+
+      <div class="org-panel is-hidden" id="org-calendar">
+        <div class="card glass">
+          <div class="card__head">
+            <h3 id="calendar-title">Calendário</h3>
+            <div class="cal-nav">
+              <button class="icon-btn icon-btn--sm" id="cal-prev">‹</button>
+              <button class="icon-btn icon-btn--sm" id="cal-next">›</button>
+            </div>
+          </div>
+          <div class="calendar-grid" id="calendar-grid"></div>
+          <div id="calendar-day-events"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ESTUDOS ===== -->
+    <section class="view" id="view-estudos" data-view="estudos">
+      <div class="seg-control" id="study-tabs">
+        <button class="seg-btn is-active" data-study="notes">Notas</button>
+        <button class="seg-btn" data-study="flashcards">Flashcards</button>
+        <button class="seg-btn" data-study="plan">Planejamento</button>
+      </div>
+
+      <div class="study-panel" id="study-notes">
+        <div class="card glass">
+          <div class="card__head">
+            <h3>Bloco de notas &amp; resumos</h3>
+            <button class="btn-pill" id="btn-new-note">+ Nova nota</button>
+          </div>
+          <div class="note-list" id="note-list"></div>
+        </div>
+      </div>
+
+      <div class="study-panel is-hidden" id="study-flashcards">
+        <div class="card glass">
+          <div class="card__head">
+            <h3>Flashcards</h3>
+            <button class="btn-pill" id="btn-new-flashcard">+ Novo card</button>
+          </div>
+          <div class="flashcard-stage" id="flashcard-stage">
+            <p class="empty-hint">Crie seu primeiro flashcard para começar a estudar.</p>
+          </div>
+          <div class="flashcard-controls" id="flashcard-controls" style="display:none;">
+            <button class="icon-btn" id="fc-prev">‹</button>
+            <span id="fc-progress">0/0</span>
+            <button class="icon-btn" id="fc-flip">Virar</button>
+            <button class="icon-btn" id="fc-next">›</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="study-panel is-hidden" id="study-plan">
+        <div class="card glass">
+          <div class="card__head">
+            <h3>Planejamento de estudos</h3>
+          </div>
+          <form id="plan-form" class="inline-form inline-form--multi">
+            <input type="text" id="plan-subject" placeholder="Matéria/Tema" />
+            <input type="date" id="plan-date" />
+            <button type="submit" class="btn-pill">Agendar</button>
+          </form>
+          <ul class="check-list" id="plan-list"></ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ---------- BOTTOM NAV ---------- -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="nav-item is-active" data-view="home">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+      <span>Início</span>
+    </button>
+    <button class="nav-item" data-view="chat">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 1 1-3.8-7.1L21 3l-1 3.6a8.4 8.4 0 0 1 1 4.9Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>
+      <span>Chat</span>
+    </button>
+    <button class="nav-item" data-view="financas">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+      <span>Finanças</span>
+    </button>
+    <button class="nav-item" data-view="organizacao">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="m8 12 2.5 2.5L16 9"/></svg>
+      <span>Organizar</span>
+    </button>
+    <button class="nav-item" data-view="estudos">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5.5C5 4.3 8 4 12 5.2c4-1.2 7-1 9 .3v13c-2-1.3-5-1.5-9-.3-4-1.2-7-.9-9 .3Z"/><path d="M12 5.2v13.3"/></svg>
+      <span>Estudos</span>
+    </button>
+  </nav>
+
+  <!-- ---------- FLOATING ACTION (somente na home) ---------- -->
+  <button class="fab" id="fab-chat" aria-label="Novo lançamento por chat">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+
+  <!-- ---------- INSTALL BANNER ---------- -->
+  <div class="install-banner" id="install-banner" hidden>
+    <div class="install-banner__text">
+      <strong>Instale o Aurora</strong>
+      <span>Acesso rápido direto da sua tela inicial</span>
+    </div>
+    <button class="btn-pill" id="btn-install">Instalar</button>
+    <button class="icon-btn icon-btn--sm" id="btn-dismiss-install">✕</button>
+  </div>
+
+  <!-- ---------- IOS INSTALL HINT ---------- -->
+  <div class="sheet-backdrop" id="ios-hint-backdrop" hidden>
+    <div class="sheet">
+      <div class="sheet__handle"></div>
+      <h3>Instalar no iPhone</h3>
+      <ol class="ios-steps">
+        <li>Toque no ícone <strong>Compartilhar</strong> <span class="ios-icon">⬆️</span> na barra do Safari</li>
+        <li>Escolha <strong>"Adicionar à Tela de Início"</strong></li>
+        <li>Toque em <strong>Adicionar</strong> — pronto!</li>
+      </ol>
+      <button class="btn-pill btn-pill--block" id="btn-close-ios-hint">Entendi</button>
+    </div>
+  </div>
+
+  <!-- ---------- SETTINGS SHEET ---------- -->
+  <div class="sheet-backdrop" id="settings-backdrop" hidden>
+    <div class="sheet">
+      <div class="sheet__handle"></div>
+      <h3>Configurações</h3>
+
+      <div class="settings-section">
+        <h4>Aparência</h4>
+        <div class="settings-row">
+          <span>Tema escuro</span>
+          <label class="switch">
+            <input type="checkbox" id="toggle-dark" />
+            <span class="switch__track"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h4>Exportar relatórios</h4>
+        <div class="settings-actions">
+          <button class="btn-outline" id="export-json">Exportar JSON</button>
+          <button class="btn-outline" id="export-csv">Exportar Excel (CSV)</button>
+          <button class="btn-outline" id="export-pdf">Exportar PDF</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h4>Instalação</h4>
+        <button class="btn-outline" id="settings-install">Adicionar à Tela de Início</button>
+      </div>
+
+      <div class="settings-section">
+        <h4>Dados</h4>
+        <p class="settings-hint">Todos os seus dados ficam apenas neste dispositivo. Nada é enviado a servidores.</p>
+        <button class="btn-outline btn-outline--danger" id="reset-data">Apagar todos os dados</button>
+      </div>
+
+      <button class="btn-pill btn-pill--block" id="btn-close-settings">Fechar</button>
+    </div>
+  </div>
+
+  <!-- ---------- TRANSACTION MODAL ---------- -->
+  <div class="sheet-backdrop" id="tx-backdrop" hidden>
+    <div class="sheet">
+      <div class="sheet__handle"></div>
+      <h3 id="tx-modal-title">Novo lançamento</h3>
+      <form id="tx-form">
+        <div class="seg-control" id="tx-type-tabs">
+          <button type="button" class="seg-btn is-active" data-type="expense">Despesa</button>
+          <button type="button" class="seg-btn" data-type="income">Receita</button>
+        </div>
+        <label class="field-label">Descrição</label>
+        <input type="text" id="tx-desc" placeholder="Ex: Mercado, Uber, Salário..." required />
+        <label class="field-label">Valor (R$)</label>
+        <input type="number" id="tx-value" placeholder="0,00" step="0.01" min="0" required />
+        <label class="field-label">Categoria</label>
+        <select id="tx-category"></select>
+        <label class="field-label">Data</label>
+        <input type="date" id="tx-date" />
+        <input type="hidden" id="tx-id" />
+        <button type="submit" class="btn-pill btn-pill--block">Salvar lançamento</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ---------- NOTE MODAL ---------- -->
+  <div class="sheet-backdrop" id="note-backdrop" hidden>
+    <div class="sheet">
+      <div class="sheet__handle"></div>
+      <h3>Nota / Resumo</h3>
+      <form id="note-form">
+        <input type="text" id="note-title" placeholder="Título" required />
+        <textarea id="note-body" rows="8" placeholder="Escreva seu resumo ou anotação..."></textarea>
+        <input type="hidden" id="note-id" />
+        <button type="submit" class="btn-pill btn-pill--block">Salvar nota</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ---------- FLASHCARD MODAL ---------- -->
+  <div class="sheet-backdrop" id="flashcard-backdrop" hidden>
+    <div class="sheet">
+      <div class="sheet__handle"></div>
+      <h3>Novo flashcard</h3>
+      <form id="flashcard-form">
+        <label class="field-label">Pergunta (frente)</label>
+        <textarea id="flashcard-front" rows="3" required></textarea>
+        <label class="field-label">Resposta (verso)</label>
+        <textarea id="flashcard-back" rows="3" required></textarea>
+        <button type="submit" class="btn-pill btn-pill--block">Salvar card</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ---------- TOAST ---------- -->
+  <div class="toast" id="toast"></div>
+
+</div>
+
+<!-- ===================== LIBS (CDN, gratuitas) ===================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- ===================== APP SCRIPTS ===================== -->
+<script src="js/storage.js"></script>
+<script src="js/finance.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/tasks.js"></script>
+<script src="js/studies.js"></script>
+<script src="js/export.js"></script>
+<script src="js/pwa.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
